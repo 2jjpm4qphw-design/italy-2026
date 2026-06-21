@@ -1,0 +1,354 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0D1B3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Italy '26</title>
+<style>
+:root{--navy:#0D1B3E;--ink2:#1A3A6B;--line:#26467f;--mist:#C4CCDD;--white:#FFFFFF;--lime:#C4F000;--paper:#F4F5F7;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--navy);color:var(--mist);font-family:'Montserrat',-apple-system,system-ui,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased;}
+body{padding-bottom:env(safe-area-inset-bottom);}
+.wrap{max-width:560px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;}
+header{padding:calc(env(safe-area-inset-top) + 12px) 16px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:linear-gradient(180deg,var(--navy) 70%,rgba(13,27,62,0));z-index:5;}
+header .ttl{font-weight:800;font-size:18px;letter-spacing:-.03em;color:var(--white);}
+header .ttl span{color:var(--lime);}
+header .gear{background:none;border:none;color:var(--mist);font-size:20px;padding:6px;cursor:pointer;}
+.sync-dot{font-size:10px;color:var(--mist);font-weight:600;letter-spacing:.04em;margin-left:8px;font-variant-numeric:tabular-nums;}
+.sync-dot.ok{color:var(--lime);} .sync-dot.err{color:var(--mist);}
+main{flex:1;padding:4px 14px 90px;}
+.tabbar{position:fixed;left:0;right:0;bottom:0;display:flex;background:#0a1530;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:6;}
+.tabbar button{flex:1;background:none;border:none;color:var(--mist);font-size:10px;font-weight:600;padding:10px 4px 12px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;}
+.tabbar button .ic{display:block;font-size:19px;margin-bottom:3px;}
+.tabbar button.on{color:var(--lime);}
+.view{display:none;} .view.on{display:block;}
+h2{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--lime);margin:18px 0 8px;font-weight:600;}
+.card{background:var(--ink2);border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.card .k{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--mist);font-weight:600;}
+.card .big{font-size:16px;font-weight:700;letter-spacing:-.01em;color:var(--white);margin:3px 0;}
+.card .sub{font-size:12px;color:var(--mist);}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.itn{border-left:2px solid var(--line);padding:2px 0 2px 12px;margin:9px 0;}
+.itn .d{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);}
+.itn .t{font-size:14px;font-weight:700;color:var(--white);margin:1px 0;}
+.itn .n{font-size:12px;color:var(--mist);}
+/* expenses */
+.addbox{background:var(--ink2);border-radius:14px;padding:12px;margin:10px 0 6px;position:sticky;top:54px;z-index:4;}
+.amtrow{display:flex;gap:8px;align-items:stretch;}
+.amtrow .cur{flex:0 0 64px;}
+.addbox input,.addbox select{width:100%;background:var(--navy);border:1px solid var(--line);color:var(--white);border-radius:9px;padding:11px 10px;font-size:16px;font-family:inherit;}
+.addbox input::placeholder{color:#7e88a3;}
+.addbox .amt{font-size:22px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.addbtn{width:100%;margin-top:8px;background:var(--lime);color:var(--navy);border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;letter-spacing:.02em;cursor:pointer;}
+.addbtn:active{transform:scale(.99);}
+.totbar{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#0a1530;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;}
+.totbar .lab{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--mist);font-weight:600;}
+.totbar .v{font-size:18px;font-weight:700;color:var(--lime);font-variant-numeric:tabular-nums;}
+.totbar .v small{font-size:11px;color:var(--mist);font-weight:600;}
+.exp{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid #1b2c52;}
+.exp .meta{flex:1;min-width:0;}
+.exp .m1{font-size:14px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.exp .m2{font-size:11px;color:var(--mist);font-weight:500;}
+.exp .amt{font-weight:700;font-size:15px;white-space:nowrap;text-align:right;color:var(--white);font-variant-numeric:tabular-nums;}
+.exp .amt small{display:block;font-size:10px;color:var(--mist);font-weight:500;}
+.exp .del{background:none;border:none;color:#7e88a3;font-size:18px;padding:4px 6px;cursor:pointer;}
+.empty{color:var(--mist);text-align:center;font-size:13px;padding:24px 10px;}
+.pill{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:var(--lime);color:var(--navy);border-radius:20px;padding:2px 8px;margin-left:6px;}
+/* settings sheet */
+.sheet{position:fixed;inset:0;background:rgba(4,9,24,.6);display:none;align-items:flex-end;z-index:20;}
+.sheet.on{display:flex;}
+.sheet .panel{background:#0f2147;width:100%;max-width:560px;margin:0 auto;border-radius:16px 16px 0 0;padding:16px 16px calc(env(safe-area-inset-bottom) + 18px);max-height:90vh;overflow:auto;}
+.sheet h3{font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--white);margin-bottom:4px;}
+.sheet label{display:block;font-size:11px;color:var(--mist);font-weight:600;margin:12px 0 4px;text-transform:uppercase;letter-spacing:.1em;}
+.sheet input{width:100%;background:var(--navy);border:1px solid var(--line);color:var(--white);border-radius:9px;padding:10px;font-size:15px;font-family:inherit;}
+.sheet .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.sheet button{flex:1;min-width:120px;border:1px solid var(--line);background:var(--ink2);color:var(--mist);border-radius:9px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;}
+.sheet button.primary{background:var(--lime);border-color:var(--lime);color:var(--navy);font-weight:700;}
+.sheet button.ghost{background:none;}
+.sheet .hint{font-size:11px;color:#8a93ad;margin-top:4px;}
+.note{font-size:11px;color:#8a93ad;margin:8px 2px;}
+</style></head>
+<body><div class="wrap">
+<header>
+  <div class="ttl">Italy <span>'26</span><span class="sync-dot" data-sync>·local</span></div>
+  <button class="gear" data-open-settings aria-label="Settings">⚙</button>
+</header>
+<main>
+  <!-- ITINERARY -->
+  <section class="view on" data-view="itin">
+    <div class="card">
+      <div class="k">The fortnight</div>
+      <div class="big">Tue… Fri 26 Jun → Sun 12 Jul</div>
+      <div class="sub">5 travellers · two bases · Tuscany &amp; the Argentario</div>
+    </div>
+    <h2>Flights</h2>
+    <div class="row2">
+      <div class="card"><div class="k">Out · Fri 26 Jun</div><div class="big">LTN 06:00</div><div class="sub">EZY2489 → PSA 09:20</div></div>
+      <div class="card"><div class="k">Home · Sun 12 Jul</div><div class="big">PSA 10:45</div><div class="sub">EZY2490 → LTN 12:05</div></div>
+    </div>
+    <h2>Where you're staying</h2>
+    <div class="card"><div class="k">Week 1 · 26 Jun–4 Jul</div><div class="big">Pergine Valdarno</div><div class="sub">Via Montozzi 3, 52019 · in Fri 16:00–18:00 · out Sat 4 before 10:00 · conf HMTNE5F8RS</div></div>
+    <div class="card"><div class="k">Week 2 · 4–11 Jul</div><div class="big">Porto Santo Stefano</div><div class="sub">Via Panoramica 50, 58019 · in Sat 4 at 15:00 · conf HMNFKSAS5Y</div></div>
+    <div class="card"><div class="k">Last night · Sat 11 Jul</div><div class="big">Lucca <span class="pill">to book</span></div><div class="sub">Then ~40 min to Pisa airport on Sun 12.</div></div>
+    <h2>Day by day</h2>
+    <div data-days></div>
+    <h2>Don't miss</h2>
+    <div class="card"><div class="k">Thu 2 Jul</div><div class="big">Palio di Siena</div><div class="sub">Race ~19:30 · historic procession from ~17:00 · from the Pergine base.</div></div>
+    <div class="card"><div class="k">27 Jun–31 Jul</div><div class="big">Siena Duomo floor uncovered</div><div class="sub">The inlaid marble floor is on show during your visit.</div></div>
+    <div class="card"><div class="k">Week 2</div><div class="big">Giglio ferry</div><div class="sub">~1h from Porto S. Stefano · book the car space ahead in July.</div></div>
+    <p class="note">Full detail, maps &amp; parking are in the printed booklet. This app is for quick reference + logging spend.</p>
+  </section>
+
+  <!-- EXPENSES -->
+  <section class="view" data-view="exp">
+    <div class="addbox">
+      <div class="amtrow">
+        <input class="amt" data-amt type="text" inputmode="decimal" placeholder="0.00" aria-label="Amount">
+        <select class="cur" data-cur aria-label="Currency"><option value="EUR">€</option><option value="GBP">£</option></select>
+      </div>
+      <div class="grid2">
+        <input data-cat list="cats" placeholder="Category" aria-label="Category">
+        <input data-payer list="payers" placeholder="Paid by" aria-label="Paid by">
+      </div>
+      <input data-note placeholder="Note (optional)" aria-label="Note" style="margin-top:8px;">
+      <button class="addbtn" data-add>+ Add expense</button>
+    </div>
+    <datalist id="cats"><option value="Food &amp; drink"><option value="Groceries"><option value="Fuel"><option value="Parking / tolls"><option value="Tickets / entry"><option value="Ferry / boat"><option value="Shopping"><option value="Gifts"><option value="Other"></datalist>
+    <datalist id="payers"><option value="Amex"><option value="Visa"><option value="Mastercard"><option value="Debit"><option value="Cash"><option value="Joint"></datalist>
+    <div class="totbar"><span class="lab">Total spent</span><span class="v" data-tot-all>£0.00 <small>· €0.00</small></span></div>
+    <div class="totbar" data-budget-bar hidden><span class="lab">Budget left</span><span class="v" data-tot-rem>—</span></div>
+    <div data-explist></div>
+  </section>
+</main>
+<nav class="tabbar">
+  <button class="on" data-tab="itin"><span class="ic">🗺️</span>Itinerary</button>
+  <button data-tab="exp"><span class="ic">💶</span>Expenses</button>
+</nav>
+</div>
+
+<!-- SETTINGS -->
+<div class="sheet" data-settings>
+  <div class="panel">
+    <h3>Settings &amp; sync</h3>
+    <p class="hint">Everything saves on this device automatically. Add a Gist to sync across your phone, iPad &amp; Mac.</p>
+    <label>Exchange rate · £1 = €</label>
+    <input data-cfg-rate type="text" inputmode="decimal" placeholder="1.15">
+    <label>Total budget (£, optional)</label>
+    <input data-cfg-budget type="text" inputmode="decimal" placeholder="e.g. 2500">
+    <label>Sync — Gist ID</label>
+    <input data-cfg-id placeholder="e.g. 9f1c… (or paste the gist URL)">
+    <label>Sync — GitHub token (gist scope)</label>
+    <input data-cfg-token type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="ghp_… or github_pat_…">
+    <p class="hint">Stored only on this device. Needs the <code>gist</code> scope.</p>
+    <div class="btns">
+      <button class="primary" data-cfg-save>Save</button>
+      <button data-sync-now>Sync now</button>
+    </div>
+    <div class="btns">
+      <button data-export>Export backup</button>
+      <button data-import>Import backup</button>
+    </div>
+    <div class="btns">
+      <button class="ghost" data-clear style="color:#f48fc2;border-color:#5b2740;">Clear all expenses</button>
+      <button class="ghost" data-close-settings>Close</button>
+    </div>
+    <p class="hint" data-cfg-msg></p>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+
+/* ---------- storage (private-mode safe) ---------- */
+var _mem={};
+function lsGet(k){try{return localStorage.getItem(k);}catch(_){return (k in _mem)?_mem[k]:null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(_){_mem[k]=v;}}
+var SKEY='italy2026:data', IDK='italy2026:gist-id', TOKK='italy2026:gist-token';
+
+/* ---------- state ---------- */
+var state=load();
+function load(){try{var o=JSON.parse(lsGet(SKEY));if(o&&o.expenses)return o;}catch(_){ }return {expenses:[],rate:1.15,budget:null,meta:{updatedAt:0}};}
+function save(){state.meta=state.meta||{};state.meta.updatedAt=Date.now();lsSet(SKEY,JSON.stringify(state));}
+function uid(){return 'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+/* ---------- credentials ---------- */
+var creds=(function(){var id=lsGet(IDK),tk=lsGet(TOKK);return (id&&tk)?{id:id,token:tk}:null;})();
+
+/* ---------- money ---------- */
+function rate(){var r=parseFloat(state.rate);return (isFinite(r)&&r>0)?r:1.15;}
+function num(v){v=parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,''));return isFinite(v)?v:0;}
+function toGBP(e){return e.cur==='EUR'? e.amount/rate() : e.amount;}
+function toEUR(e){return e.cur==='EUR'? e.amount : e.amount*rate();}
+function money(g,e){return '£'+g.toFixed(2)+' <small>· €'+e.toFixed(2)+'</small>';}
+
+/* ---------- itinerary days ---------- */
+var DAYS=[
+['Fri 26','Fly + drive','LTN→PSA, collect car, into Pergine'],
+['Sat 27','Settle / Arezzo',''],['Sun 28','Florence',''],['Mon 29','Rest / pool',''],
+['Tue 30','Siena',''],['Wed 1','Val d’Orcia',''],['Thu 2','PALIO (Siena)','race ~19:30'],
+['Fri 3','Spare / favourite',''],['Sat 4','Changeover','to Porto S. Stefano, in 15:00'],
+['Sun 5','Beach / settle',''],['Mon 6','Via Panoramica & coves',''],['Tue 7','Giglio ferry',''],
+['Wed 8','Boat day / beach',''],['Thu 9','Porto Ercole / Orbetello',''],['Fri 10','Beach / spare',''],
+['Sat 11','Drive to Lucca','last night'],['Sun 12','Lucca → home','fly 10:45']
+];
+(function renderDays(){var h='';DAYS.forEach(function(d){h+='<div class="itn"><div class="d">'+d[0]+' Jun/Jul</div><div class="t">'+d[1]+'</div>'+(d[2]?'<div class="n">'+d[2]+'</div>':'')+'</div>';});$('[data-days]').innerHTML=h;})();
+
+/* ---------- render expenses ---------- */
+function fmtDate(ts){var d=new Date(ts);return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2);}
+function renderExp(){
+  var live=state.expenses.filter(function(e){return !e.deleted;}).sort(function(a,b){return b.ts-a.ts;});
+  var g=0,e2=0;live.forEach(function(x){g+=toGBP(x);e2+=toEUR(x);});
+  $('[data-tot-all]').innerHTML=money(g,e2);
+  var bud=state.budget!=null?num(state.budget):null;
+  var bar=$('[data-budget-bar]');
+  if(bud){bar.hidden=false;$('[data-tot-rem]').innerHTML='£'+(bud-g).toFixed(2)+' <small>left of £'+bud.toFixed(2)+'</small>';}
+  else bar.hidden=true;
+  var list=$('[data-explist]');
+  if(!live.length){list.innerHTML='<div class="empty">No expenses yet.<br>Add your first above — it saves instantly.</div>';return;}
+  var h='';live.forEach(function(x){
+    h+='<div class="exp" data-id="'+x.id+'"><div class="meta"><div class="m1">'+esc(x.cat||'Expense')+(x.note?' · '+esc(x.note):'')+'</div>'
+     +'<div class="m2">'+fmtDate(x.ts)+(x.payer?' · '+esc(x.payer):'')+'</div></div>'
+     +'<div class="amt">'+(x.cur==='EUR'?'€':'£')+x.amount.toFixed(2)+'<small>£'+toGBP(x).toFixed(2)+'</small></div>'
+     +'<button class="del" data-del="'+x.id+'" aria-label="Delete">✕</button></div>';
+  });
+  list.innerHTML=h;
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+/* ---------- add / delete ---------- */
+function addExpense(){
+  var amt=num($('[data-amt]').value);
+  if(!amt){$('[data-amt]').focus();return;}
+  var e={id:uid(),ts:Date.now(),amount:amt,cur:$('[data-cur]').value,
+    cat:($('[data-cat]').value||'').trim(),payer:($('[data-payer]').value||'').trim(),
+    note:($('[data-note]').value||'').trim(),deleted:false,updatedAt:Date.now()};
+  state.expenses.push(e);
+  lsSet('italy2026:lastPayer',e.payer);lsSet('italy2026:lastCat',e.cat);
+  save();renderExp();
+  $('[data-amt]').value='';$('[data-note]').value='';
+  if(navigator.vibrate)navigator.vibrate(8);
+  $('[data-amt]').focus();
+  schedulePush();
+}
+function delExpense(id){
+  var x=state.expenses.filter(function(e){return e.id===id;})[0];
+  if(!x)return; if(!confirm('Delete this expense?'))return;
+  x.deleted=true;x.updatedAt=Date.now();save();renderExp();schedulePush();
+}
+
+/* ---------- merge (last-write-wins per id) ---------- */
+function merge(a,b){
+  var byId={},out=[];
+  (a.expenses||[]).concat(b.expenses||[]).forEach(function(e){
+    var p=byId[e.id];
+    if(!p||(e.updatedAt||0)>=(p.updatedAt||0))byId[e.id]=e;
+  });
+  Object.keys(byId).forEach(function(k){out.push(byId[k]);});
+  var newer=(b.meta&&b.meta.updatedAt||0)>(a.meta&&a.meta.updatedAt||0)?b:a;
+  return {expenses:out,rate:newer.rate||a.rate||1.15,budget:(newer.budget!=null?newer.budget:a.budget),meta:{updatedAt:Math.max(a.meta&&a.meta.updatedAt||0,b.meta&&b.meta.updatedAt||0)}};
+}
+
+/* ---------- gist sync (reuses Hub Pocket pattern) ---------- */
+var GFILE='holiday-italy-2026.json';
+function setSync(cls,txt){var el=$('[data-sync]');el.className='sync-dot'+(cls?' '+cls:'');el.textContent='·'+txt;}
+function gistRead(){
+  return fetch('https://api.github.com/gists/'+creds.id,{headers:{'Authorization':'Bearer '+creds.token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}})
+   .then(function(r){if(!r.ok)throw new Error('read '+r.status);return r.json();})
+   .then(function(g){var f=g.files&&g.files[GFILE];if(!f)return {expenses:[],meta:{updatedAt:0}};
+     if(f.truncated&&f.raw_url)return fetch(f.raw_url).then(function(r){return r.json();});
+     try{return JSON.parse(f.content);}catch(_){return {expenses:[],meta:{updatedAt:0}};}});
+}
+function gistWrite(payload){
+  var body={files:{}};body.files[GFILE]={content:JSON.stringify(payload)};
+  return fetch('https://api.github.com/gists/'+creds.id,{method:'PATCH',headers:{'Authorization':'Bearer '+creds.token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},body:JSON.stringify(body)})
+   .then(function(r){if(!r.ok)throw new Error('write '+r.status);return r.json();});
+}
+var pushT;
+function schedulePush(){if(!creds)return;if(pushT)clearTimeout(pushT);pushT=setTimeout(syncNow,1200);}
+function syncNow(){
+  if(!creds){setSync('','local');return Promise.resolve();}
+  if(navigator.onLine===false){setSync('err','offline');return Promise.resolve();}
+  setSync('','syncing…');
+  return gistRead().then(function(remote){
+    var merged=merge(state,remote||{expenses:[],meta:{updatedAt:0}});
+    return gistWrite(merged).then(function(){state=merged;save();renderExp();reflectSettings();setSync('ok','synced');});
+  }).catch(function(e){console.warn(e);setSync('err','sync error');});
+}
+
+/* ---------- settings ---------- */
+function reflectSettings(){
+  $('[data-cfg-rate]').value=state.rate||'';
+  $('[data-cfg-budget]').value=state.budget!=null?state.budget:'';
+  $('[data-cfg-id]').value=creds?creds.id:'';
+  $('[data-cfg-token]').value=creds?creds.token:'';
+}
+function openSettings(){reflectSettings();$('[data-settings]').classList.add('on');}
+function closeSettings(){$('[data-settings]').classList.remove('on');}
+function saveSettings(){
+  state.rate=num($('[data-cfg-rate]').value)||1.15;
+  var b=$('[data-cfg-budget]').value.trim();state.budget=b?num(b):null;
+  var id=$('[data-cfg-id]').value.trim().replace(/^.*\/(?=[0-9a-f]{6,})/i,'');
+  var tk=$('[data-cfg-token]').value.trim();
+  if(id&&tk){creds={id:id,token:tk};lsSet(IDK,id);lsSet(TOKK,tk);}
+  save();renderExp();
+  $('[data-cfg-msg]').textContent='Saved.';
+  if(creds)syncNow().then(function(){closeSettings();});else{setSync('','local');setTimeout(closeSettings,400);}
+}
+function exportBackup(){
+  var blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='italy-2026-expenses.json';a.click();
+}
+function importBackup(){
+  var inp=document.createElement('input');inp.type='file';inp.accept='application/json,.json';
+  inp.onchange=function(){var f=inp.files[0];if(!f)return;var r=new FileReader();
+    r.onload=function(){try{var o=JSON.parse(r.result);state=merge(state,o);save();renderExp();reflectSettings();$('[data-cfg-msg]').textContent='Imported & merged.';}catch(e){$('[data-cfg-msg]').textContent='Could not read that file.';}};
+    r.readAsText(f);};
+  inp.click();
+}
+
+/* ---------- tabs ---------- */
+function tab(name){
+  $$('.view').forEach(function(v){v.classList.toggle('on',v.getAttribute('data-view')===name);});
+  $$('.tabbar button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-tab')===name);});
+  window.scrollTo(0,0);
+}
+
+/* ---------- wire up ---------- */
+document.addEventListener('click',function(ev){
+  var t=ev.target;
+  var tb=t.closest&&t.closest('[data-tab]'); if(tb){tab(tb.getAttribute('data-tab'));return;}
+  if(t.closest&&t.closest('[data-add]')){addExpense();return;}
+  var d=t.closest&&t.closest('[data-del]'); if(d){delExpense(d.getAttribute('data-del'));return;}
+  if(t.closest&&t.closest('[data-open-settings]')){openSettings();return;}
+  if(t.closest&&t.closest('[data-close-settings]')){closeSettings();return;}
+  if(t.closest&&t.closest('[data-cfg-save]')){saveSettings();return;}
+  if(t.closest&&t.closest('[data-sync-now]')){syncNow();return;}
+  if(t.closest&&t.closest('[data-export]')){exportBackup();return;}
+  if(t.closest&&t.closest('[data-import]')){importBackup();return;}
+  if(t.closest&&t.closest('[data-clear]')){if(confirm('Delete ALL expenses on this device? (Synced copies elsewhere stay until they sync.)')){state.expenses=[];save();renderExp();schedulePush();}return;}
+  if(t===$('[data-settings]')){closeSettings();return;}
+});
+$('[data-amt]').addEventListener('keydown',function(e){if(e.key==='Enter')addExpense();});
+// restore last-used payer/category as quick defaults
+$('[data-payer]').value=lsGet('italy2026:lastPayer')||'';
+$('[data-cat]').value=lsGet('italy2026:lastCat')||'';
+
+renderExp();
+if(creds){setSync('','synced?');syncNow();}else setSync('','local');
+window.addEventListener('online',function(){if(creds)syncNow();});
+
+/* PWA service worker */
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(e){console.warn('SW',e);});});}
+})();
+</script>
+</body></html>
