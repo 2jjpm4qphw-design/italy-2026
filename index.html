@@ -38,6 +38,23 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--lime
 .itn .d{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);}
 .itn .t{font-size:14px;font-weight:700;color:var(--white);margin:1px 0;}
 .itn .n{font-size:12px;color:var(--mist);}
+.booklet{display:flex;align-items:center;gap:12px;background:var(--ink2);border:1px solid var(--lime);border-radius:12px;padding:13px 14px;text-decoration:none;color:var(--white);}
+.booklet .bk-ic{font-size:22px;}
+.booklet .bk-tx{flex:1;display:flex;flex-direction:column;}
+.booklet .bk-tx b{font-size:14px;font-weight:700;color:var(--white);}
+.booklet .bk-tx small{font-size:11px;color:var(--mist);}
+.booklet .bk-go{color:var(--lime);font-size:22px;font-weight:700;}
+.card.emg{display:block;text-decoration:none;border-left:3px solid var(--lime);}
+.card.emg .big{color:var(--lime);}
+.card .fac{font-size:11px;color:var(--mist);margin-top:5px;line-height:1.5;}
+.chkwrap{display:flex;align-items:center;border-bottom:1px solid #1b2c52;}
+.chk{display:flex;align-items:center;gap:11px;flex:1;text-align:left;background:none;border:none;color:var(--mist);padding:10px 2px;font-size:14px;font-family:inherit;cursor:pointer;}
+.chk .box{flex:0 0 22px;height:22px;border:2px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:800;font-size:14px;}
+.chk.on .box{background:var(--lime);border-color:var(--lime);}
+.chk.on .lbl{color:#6b7290;text-decoration:line-through;}
+.chk .lbl{flex:1;}
+.cdel{background:none;border:none;color:#6b7290;font-size:15px;padding:0 8px;cursor:pointer;}
+.chkadd{display:block;width:100%;text-align:left;background:none;border:1px dashed var(--line);color:var(--mist);border-radius:8px;padding:8px 11px;font-size:12px;font-weight:600;font-family:inherit;margin:8px 0 4px;cursor:pointer;}
 /* expenses */
 .addbox{background:var(--ink2);border-radius:14px;padding:12px;margin:10px 0 6px;position:sticky;top:54px;z-index:4;}
 .amtrow{display:flex;gap:8px;align-items:stretch;}
@@ -94,8 +111,8 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--lime
       <div class="card"><div class="k">Home · Sun 12 Jul</div><div class="big">PSA 10:45</div><div class="sub">EZY2490 → LTN 12:05</div></div>
     </div>
     <h2>Where you're staying</h2>
-    <div class="card"><div class="k">Week 1 · 26 Jun–4 Jul</div><div class="big">Pergine Valdarno</div><div class="sub">Via Montozzi 3, 52019 · in Fri 16:00–18:00 · out Sat 4 before 10:00 · conf HMTNE5F8RS</div></div>
-    <div class="card"><div class="k">Week 2 · 4–11 Jul</div><div class="big">Porto Santo Stefano</div><div class="sub">Via Panoramica 50, 58019 · in Sat 4 at 15:00 · conf HMNFKSAS5Y</div></div>
+    <div class="card"><div class="k">Week 1 · 26 Jun–4 Jul</div><div class="big">Pergine Valdarno</div><div class="sub">Via Montozzi 3, 52019 · in Fri 16:00–18:00 · out Sat 4 before 10:00 · conf HMTNE5F8RS · host Judith (Interhome)</div><div class="fac">Pool · WiFi · BBQ · roofed parking · washing machine · sleeps 7. No A/C (fans), no smoke alarm. Motor access 3 km on unmade road.</div></div>
+    <div class="card"><div class="k">Week 2 · 4–11 Jul</div><div class="big">Porto Santo Stefano</div><div class="sub">Via Panoramica 50, 58019 · in Sat 4 at 15:00 · conf HMNFKSAS5Y · host Barbara</div><div class="fac">Sea view · beach access · WiFi · espresso machine · fans. No A/C, no smoke/CO alarm. Free on-street + paid parking.</div></div>
     <div class="card"><div class="k">Last night · Sat 11 Jul</div><div class="big">Lucca <span class="pill">to book</span></div><div class="sub">Then ~40 min to Pisa airport on Sun 12.</div></div>
     <h2>Day by day</h2>
     <div data-days></div>
@@ -103,7 +120,18 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--lime
     <div class="card"><div class="k">Thu 2 Jul</div><div class="big">Palio di Siena</div><div class="sub">Race ~19:30 · historic procession from ~17:00 · from the Pergine base.</div></div>
     <div class="card"><div class="k">27 Jun–31 Jul</div><div class="big">Siena Duomo floor uncovered</div><div class="sub">The inlaid marble floor is on show during your visit.</div></div>
     <div class="card"><div class="k">Week 2</div><div class="big">Giglio ferry</div><div class="sub">~1h from Porto S. Stefano · book the car space ahead in July.</div></div>
-    <p class="note">Full detail, maps &amp; parking are in the printed booklet. This app is for quick reference + logging spend.</p>
+    <h2>Emergency &amp; policies</h2>
+    <a class="card emg" href="tel:+441444465579"><div class="k">24-hour medical · GetAway</div><div class="big">+44 1444 465 579</div><div class="sub">Tap to call · travel policy AGG597976</div></a>
+    <a class="card emg" href="tel:112"><div class="k">Italy emergency</div><div class="big">112</div><div class="sub">English, auto-locates you · 118 ambulance · 113 police · 1530 coastguard</div></a>
+    <a class="card emg" href="tel:+39050042028"><div class="k">Budget breakdown / desk</div><div class="big">+39 050 42028</div><div class="sub">UK line +44 161 602 5555 · hire ref 41278076GB0</div></a>
+    <div class="card"><div class="k">Car-hire cover · Zurich Full Protection</div><div class="big">Policy 741942123/2</div><div class="sub">Covers the excess up to £20,000 · claim within 3 months with proof</div></div>
+    <h2>The full booklet</h2>
+    <a class="booklet" href="italy-booklet.pdf" target="_blank" rel="noopener">
+      <span class="bk-ic">📄</span>
+      <span class="bk-tx"><b>Open the booklet (PDF)</b><small>Maps, parking, ZTL, day-by-day detail</small></span>
+      <span class="bk-go">›</span>
+    </a>
+    <p class="note">This app is for quick reference + logging spend; the booklet has the full detail.</p>
   </section>
 
   <!-- EXPENSES -->
@@ -126,9 +154,18 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--lime
     <div class="totbar" data-budget-bar hidden><span class="lab">Budget left</span><span class="v" data-tot-rem>—</span></div>
     <div data-explist></div>
   </section>
+
+  <!-- CHECKLIST -->
+  <section class="view" data-view="check">
+    <div class="totbar"><span class="lab">Checklist</span><span class="v" data-chk-prog>0 / 0</span></div>
+    <div data-chk-week></div>
+    <div data-chk-pack></div>
+    <p class="note">Tick items as you go — saved on this device and synced like your expenses.</p>
+  </section>
 </main>
 <nav class="tabbar">
   <button class="on" data-tab="itin"><span class="ic">🗺️</span>Itinerary</button>
+  <button data-tab="check"><span class="ic">✅</span>Checklist</button>
   <button data-tab="exp"><span class="ic">💶</span>Expenses</button>
 </nav>
 </div>
@@ -176,7 +213,7 @@ function lsSet(k,v){try{localStorage.setItem(k,v);}catch(_){_mem[k]=v;}}
 var SKEY='italy2026:data', IDK='italy2026:gist-id', TOKK='italy2026:gist-token';
 
 /* ---------- state ---------- */
-var state=load();
+var state=load(); if(!state.checks)state.checks={}; if(!state.customItems)state.customItems=[];
 function load(){try{var o=JSON.parse(lsGet(SKEY));if(o&&o.expenses)return o;}catch(_){ }return {expenses:[],rate:1.15,budget:null,meta:{updatedAt:0}};}
 function save(){state.meta=state.meta||{};state.meta.updatedAt=Date.now();lsSet(SKEY,JSON.stringify(state));}
 function uid(){return 'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
@@ -225,6 +262,69 @@ function renderExp(){
 }
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
 
+/* ---------- checklist ---------- */
+var CHECK_DATA={
+ week:[
+  ['Sunday (today)',[['w_checkin','Check in online — both flights'],['w_passes','Print boarding passes (out & return)'],['w_passports','Get the passports out'],['w_ghic','List everyone\'s GHIC numbers'],['w_lucca','Book the Lucca hotel (Sat 11 Jul)']]],
+  ['Wednesday',[['w_haircut','Pre-holiday haircut'],['w_boots','Collect meds from Boots']]],
+  ['Thursday',[['w_teze','Take Teze injection']]],
+  ['This week',[['w_taxi','Book taxi home → Luton for 03:15 (Fri 26 Jun)']]]
+ ],
+ pack:[
+  ['Documents',[['p_passport','Passports (×5)'],['p_licence','Driving licence'],['p_cards','Credit cards'],['p_ghic','GHIC cards (×5)'],['p_ins','Travel insurance + flight info']]],
+  ['Health',[['p_meds','Meds (from Boots)'],['p_teze','Teze done'],['p_cpap','CPAP machine']]],
+  ['Toiletries',[['p_tooth','Toothbrush · razor + blades'],['p_face','Face wash + cleanser'],['p_hair','Hair spray'],['p_sun','Suntan lotion']]],
+  ['For everyone (×5)',[['p_caps','Baseball caps'],['p_packs','Backpacks'],['p_bottles','Water bottles']]],
+  ['Electronics',[['p_ipad','iPad + USB lead'],['p_chargers','Chargers: phone, iPad, watch, camera, laptop'],['p_dslr','DSLR + lenses + SD cards'],['p_speaker','Portable speaker'],['p_selfie','Selfie stick + controller']]],
+  ['Work',[['p_laptop','Work laptop + charger']]],
+  ['Clothes',[['p_clothes','Light clothes (30°C+)'],['p_modest','Covered shoulders/knees for churches'],['p_swim','Swimwear · water shoes'],['p_shoes','Comfy shoes for cobbles']]]
+ ]
+};
+function isChecked(id){var c=state.checks&&state.checks[id];return !!(c&&c.v);}
+function chkrow(id,label,custom){
+  var on=isChecked(id);
+  return '<div class="chkwrap"><button class="chk'+(on?' on':'')+'" data-chk="'+id+'"><span class="box">'+(on?'✓':'')+'</span><span class="lbl">'+esc(label)+'</span></button>'
+    +(custom?'<button class="cdel" data-cdel="'+id+'" aria-label="Remove">✕</button>':'')+'</div>';
+}
+function renderGroup(groups){
+  var h='';
+  groups.forEach(function(g){
+    h+='<h2>'+esc(g[0])+'</h2>';
+    g[1].forEach(function(it){ h+=chkrow(it[0],it[1],false); });
+    (state.customItems||[]).filter(function(c){return c.group===g[0]&&!c.deleted;}).forEach(function(c){ h+=chkrow(c.id,c.label,true); });
+    h+='<button class="chkadd" data-add-grp="'+esc(g[0])+'">+ add item</button>';
+  });
+  return h;
+}
+function renderChecks(){
+  var w=$('[data-chk-week]'),p=$('[data-chk-pack]');
+  if(w)w.innerHTML=renderGroup(CHECK_DATA.week);
+  if(p)p.innerHTML=renderGroup(CHECK_DATA.pack);
+  var tot=0,done=0;
+  CHECK_DATA.week.concat(CHECK_DATA.pack).forEach(function(g){g[1].forEach(function(it){tot++;if(isChecked(it[0]))done++;});});
+  (state.customItems||[]).filter(function(c){return !c.deleted;}).forEach(function(c){tot++;if(isChecked(c.id))done++;});
+  var pr=$('[data-chk-prog]');if(pr)pr.textContent=done+' / '+tot+' done';
+}
+function toggleCheck(id){
+  if(!state.checks)state.checks={};
+  state.checks[id]={v:!isChecked(id),t:Date.now()};
+  save();renderChecks();if(navigator.vibrate)navigator.vibrate(6);schedulePush();
+}
+function uidc(){return 'c_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
+function addCustom(group){
+  var label=window.prompt('Add to "'+group+'":');
+  if(!label)return; label=label.trim(); if(!label)return;
+  if(!state.customItems)state.customItems=[];
+  state.customItems.push({id:uidc(),group:group,label:label,t:Date.now(),deleted:false});
+  save();renderChecks();schedulePush();
+}
+function delCustom(id){
+  if(!state.customItems)return;
+  state.customItems.forEach(function(c){if(c.id===id){c.deleted=true;c.t=Date.now();}});
+  if(state.checks&&state.checks[id])delete state.checks[id];
+  save();renderChecks();schedulePush();
+}
+
 /* ---------- add / delete ---------- */
 function addExpense(){
   var amt=num($('[data-amt]').value);
@@ -254,8 +354,13 @@ function merge(a,b){
     if(!p||(e.updatedAt||0)>=(p.updatedAt||0))byId[e.id]=e;
   });
   Object.keys(byId).forEach(function(k){out.push(byId[k]);});
+  var checks={};
+  [a.checks||{},b.checks||{}].forEach(function(src){for(var k in src){var e=src[k];if(!checks[k]||(e.t||0)>=(checks[k].t||0))checks[k]=e;}});
+  var ci={};
+  (a.customItems||[]).concat(b.customItems||[]).forEach(function(e){var p=ci[e.id];if(!p||(e.t||0)>=(p.t||0))ci[e.id]=e;});
+  var clist=Object.keys(ci).map(function(k){return ci[k];});
   var newer=(b.meta&&b.meta.updatedAt||0)>(a.meta&&a.meta.updatedAt||0)?b:a;
-  return {expenses:out,rate:newer.rate||a.rate||1.15,budget:(newer.budget!=null?newer.budget:a.budget),meta:{updatedAt:Math.max(a.meta&&a.meta.updatedAt||0,b.meta&&b.meta.updatedAt||0)}};
+  return {expenses:out,checks:checks,customItems:clist,rate:newer.rate||a.rate||1.15,budget:(newer.budget!=null?newer.budget:a.budget),meta:{updatedAt:Math.max(a.meta&&a.meta.updatedAt||0,b.meta&&b.meta.updatedAt||0)}};
 }
 
 /* ---------- gist sync (reuses Hub Pocket pattern) ---------- */
@@ -327,6 +432,9 @@ function tab(name){
 document.addEventListener('click',function(ev){
   var t=ev.target;
   var tb=t.closest&&t.closest('[data-tab]'); if(tb){tab(tb.getAttribute('data-tab'));return;}
+  var ag=t.closest&&t.closest('[data-add-grp]'); if(ag){addCustom(ag.getAttribute('data-add-grp'));return;}
+  var cd=t.closest&&t.closest('[data-cdel]'); if(cd){delCustom(cd.getAttribute('data-cdel'));return;}
+  var ck=t.closest&&t.closest('[data-chk]'); if(ck){toggleCheck(ck.getAttribute('data-chk'));return;}
   if(t.closest&&t.closest('[data-add]')){addExpense();return;}
   var d=t.closest&&t.closest('[data-del]'); if(d){delExpense(d.getAttribute('data-del'));return;}
   if(t.closest&&t.closest('[data-open-settings]')){openSettings();return;}
@@ -343,7 +451,7 @@ $('[data-amt]').addEventListener('keydown',function(e){if(e.key==='Enter')addExp
 $('[data-payer]').value=lsGet('italy2026:lastPayer')||'';
 $('[data-cat]').value=lsGet('italy2026:lastCat')||'';
 
-renderExp();
+renderExp();renderChecks();
 if(creds){setSync('','synced?');syncNow();}else setSync('','local');
 window.addEventListener('online',function(){if(creds)syncNow();});
 
