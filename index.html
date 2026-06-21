@@ -38,6 +38,12 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--lime
 .itn .d{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);}
 .itn .t{font-size:14px;font-weight:700;color:var(--white);margin:1px 0;}
 .itn .n{font-size:12px;color:var(--mist);}
+.itn.today{border-left-color:var(--lime);background:rgba(196,240,0,.07);border-radius:0 8px 8px 0;padding-right:8px;}
+.itn.today .d{color:var(--lime);}
+.todaybar{background:var(--ink2);border:1px solid var(--lime);border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.todaybar .k{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);}
+.todaybar .big{font-size:18px;font-weight:800;color:var(--white);margin:2px 0;}
+.todaybar .sub{font-size:12px;color:var(--mist);}
 .booklet{display:flex;align-items:center;gap:12px;background:var(--ink2);border:1px solid var(--lime);border-radius:12px;padding:13px 14px;text-decoration:none;color:var(--white);}
 .booklet .bk-ic{font-size:22px;}
 .booklet .bk-tx{flex:1;display:flex;flex-direction:column;}
@@ -100,6 +106,7 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--lime
 <main>
   <!-- ITINERARY -->
   <section class="view on" data-view="itin">
+    <div class="todaybar" data-today hidden></div>
     <div class="card">
       <div class="k">The fortnight</div>
       <div class="big">Tue… Fri 26 Jun → Sun 12 Jul</div>
@@ -109,6 +116,11 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--lime
     <div class="row2">
       <div class="card"><div class="k">Out · Fri 26 Jun</div><div class="big">LTN 06:00</div><div class="sub">EZY2489 → PSA 09:20</div></div>
       <div class="card"><div class="k">Home · Sun 12 Jul</div><div class="big">PSA 10:45</div><div class="sub">EZY2490 → LTN 12:05</div></div>
+    </div>
+    <h2>Mid-trip · Kathryn &amp; Lucas (UK)</h2>
+    <div class="row2">
+      <div class="card"><div class="k">Out · Thu 2 Jul</div><div class="big">PSA 10:20</div><div class="sub">EZY2490 → LTN 11:40 · bag drop 08:20–09:40<br>Leave Pergine ~07:00 · back ~10:30</div></div>
+      <div class="card"><div class="k">Back · Fri 3 Jul</div><div class="big">PSA 20:50</div><div class="sub">EZY8319 Gatwick → PSA · dep 17:35<br>Leave Pergine ~19:00 · home ~22:30</div></div>
     </div>
     <h2>Where you're staying</h2>
     <div class="card"><div class="k">Week 1 · 26 Jun–4 Jul</div><div class="big">Pergine Valdarno</div><div class="sub">Via Montozzi 3, 52019 · in Fri 16:00–18:00 · out Sat 4 before 10:00 · conf HMTNE5F8RS · host Judith (Interhome)</div><div class="fac">Pool · WiFi · BBQ · roofed parking · washing machine · sleeps 7. No A/C (fans), no smoke alarm. Motor access 3 km on unmade road.</div></div>
@@ -256,13 +268,21 @@ function money(g,e){return '£'+g.toFixed(2)+' <small>· €'+e.toFixed(2)+'</sm
 var DAYS=[
 ['Fri 26','Fly + drive','LTN→PSA, collect car, into Pergine'],
 ['Sat 27','Settle / Arezzo',''],['Sun 28','Florence',''],['Mon 29','Rest / pool',''],
-['Tue 30','Siena',''],['Wed 1','Val d’Orcia',''],['Thu 2','PALIO (Siena)','race ~19:30'],
-['Fri 3','Spare / favourite',''],['Sat 4','Changeover','to Porto S. Stefano, in 15:00'],
+['Tue 30','Siena',''],['Wed 1','Val d’Orcia',''],['Thu 2','K & L fly to UK · pool day','Drop at Pisa AM · back ~10:30 · no Palio this year'],
+['Fri 3','Quiet day · Pisa pickup','Leave ~19:00 · they land 20:50 · home ~22:30'],['Sat 4','Changeover (keep it light)','to Porto S. Stefano, check in 15:00'],
 ['Sun 5','Beach / settle',''],['Mon 6','Via Panoramica & coves',''],['Tue 7','Giglio ferry',''],
 ['Wed 8','Boat day / beach',''],['Thu 9','Porto Ercole / Orbetello',''],['Fri 10','Beach / spare',''],
 ['Sat 11','Drive to Lucca','last night'],['Sun 12','Lucca → home','fly 10:45']
 ];
-(function renderDays(){var h='';DAYS.forEach(function(d){h+='<div class="itn"><div class="d">'+d[0]+' Jun/Jul</div><div class="t">'+d[1]+'</div>'+(d[2]?'<div class="n">'+d[2]+'</div>':'')+'</div>';});$('[data-days]').innerHTML=h;})();
+function tripDayIndex(){var s=new Date(2026,5,26);s.setHours(0,0,0,0);var n=new Date();n.setHours(0,0,0,0);return Math.round((n-s)/86400000);}
+function renderToday(){var el=$('[data-today]');if(!el)return;var idx=tripDayIndex();var html='';
+  if(idx<0){var g=-idx;html='<div class="k">Countdown</div><div class="big">'+g+' day'+(g===1?'':'s')+' to go</div><div class="sub">First up · '+DAYS[0][0]+' Jun · '+esc(DAYS[0][1])+'</div>';}
+  else if(idx<DAYS.length){var d=DAYS[idx];html='<div class="k">Today · '+esc(d[0])+'</div><div class="big">'+esc(d[1])+'</div>'+(d[2]?'<div class="sub">'+esc(d[2])+'</div>':'');
+    if(idx+1<DAYS.length){html+='<div class="sub" style="margin-top:6px;opacity:.75;">Tomorrow · '+esc(DAYS[idx+1][1])+'</div>';}}
+  else{html='<div class="k">That\'s a wrap</div><div class="big">Welcome home</div><div class="sub">Hope it was a good one.</div>';}
+  el.innerHTML=html;el.hidden=false;}
+function renderDays(){var idx=tripDayIndex();var h='';DAYS.forEach(function(d,i){h+='<div class="itn'+(i===idx?' today':'')+'"><div class="d">'+d[0]+' Jun/Jul'+(i===idx?' · TODAY':'')+'</div><div class="t">'+d[1]+'</div>'+(d[2]?'<div class="n">'+d[2]+'</div>':'')+'</div>';});$('[data-days]').innerHTML=h;}
+renderDays();renderToday();
 
 /* ---------- render expenses ---------- */
 function fmtDate(ts){var d=new Date(ts);return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2);}
