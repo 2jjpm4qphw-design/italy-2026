@@ -162,12 +162,36 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--lime
     <div data-chk-pack></div>
     <p class="note">Tick items as you go — saved on this device and synced like your expenses.</p>
   </section>
+
+  <!-- HOLIDAY COSTS (pre-trip / booking) -->
+  <section class="view" data-view="costs">
+    <div class="addbox">
+      <input data-cost-label list="costcats" placeholder="What (e.g. Flights, Hire car)" aria-label="Cost name" style="width:100%;">
+      <div class="amtrow" style="margin-top:8px;">
+        <input class="amt" data-cost-amt type="text" inputmode="decimal" placeholder="0.00" aria-label="Amount">
+        <select class="cur" data-cost-cur aria-label="Currency"><option value="GBP">£</option><option value="EUR">€</option></select>
+      </div>
+      <input data-cost-payer list="payers" placeholder="Paid by (Amex, Visa, Cash…)" aria-label="Paid by" style="margin-top:8px;width:100%;">
+      <button class="addbtn" data-add-cost>+ Add cost</button>
+    </div>
+    <datalist id="costcats"><option value="Flights"><option value="Week 1 — Pergine"><option value="Week 2 — Porto S. Stefano"><option value="Lucca — last night"><option value="Hire car"><option value="Car-hire insurance"><option value="Travel insurance"><option value="Fuel"><option value="Museum tickets"><option value="Palio seats"><option value="Giglio ferry"><option value="Boat day"><option value="Taxi — home/Luton"><option value="Spending money / cash"></datalist>
+    <div class="totbar"><span class="lab">Total booked</span><span class="v" data-cost-tot>£0.00 <small>· €0.00</small></span></div>
+    <div class="totbar" data-cost-paidbar><span class="lab">Paid so far</span><span class="v" data-cost-paidtot>£0.00</span></div>
+    <div data-costlist></div>
+    <p class="note">What the holiday cost to book. Tap the ○ to mark a cost paid. Saved on this device and synced like your expenses.</p>
+  </section>
 </main>
 <nav class="tabbar">
   <button class="on" data-tab="itin"><span class="ic">🗺️</span>Itinerary</button>
   <button data-tab="check"><span class="ic">✅</span>Checklist</button>
-  <button data-tab="exp"><span class="ic">💶</span>Expenses</button>
+  <button data-tab="exp"><span class="ic">💶</span>Spend</button>
+  <button data-tab="costs"><span class="ic">🧾</span>Costs</button>
 </nav>
+<style>
+.exp .cost-pay{background:none;border:none;color:var(--lime);font-size:18px;line-height:1;padding:0 8px 0 0;cursor:pointer;}
+.exp.paid .m1{opacity:.55;text-decoration:line-through;}
+.exp.paid .cost-pay{color:#7e88a3;}
+</style>
 </div>
 
 <!-- SETTINGS -->
@@ -213,7 +237,7 @@ function lsSet(k,v){try{localStorage.setItem(k,v);}catch(_){_mem[k]=v;}}
 var SKEY='italy2026:data', IDK='italy2026:gist-id', TOKK='italy2026:gist-token';
 
 /* ---------- state ---------- */
-var state=load(); if(!state.checks)state.checks={}; if(!state.customItems)state.customItems=[];
+var state=load(); if(!state.checks)state.checks={}; if(!state.customItems)state.customItems=[]; if(!state.costs)state.costs=[];
 function load(){try{var o=JSON.parse(lsGet(SKEY));if(o&&o.expenses)return o;}catch(_){ }return {expenses:[],rate:1.15,budget:null,meta:{updatedAt:0}};}
 function save(){state.meta=state.meta||{};state.meta.updatedAt=Date.now();lsSet(SKEY,JSON.stringify(state));}
 function uid(){return 'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
@@ -346,6 +370,50 @@ function delExpense(id){
   x.deleted=true;x.updatedAt=Date.now();save();renderExp();schedulePush();
 }
 
+/* ---------- holiday costs (pre-trip / booking) ---------- */
+function renderCosts(){
+  var live=(state.costs||[]).filter(function(c){return !c.deleted;}).sort(function(a,b){return (a.t||0)-(b.t||0);});
+  var g=0,e2=0,paid=0;live.forEach(function(c){g+=toGBP(c);e2+=toEUR(c);if(c.paid)paid+=toGBP(c);});
+  var tot=$('[data-cost-tot]'); if(tot)tot.innerHTML=money(g,e2);
+  var pt=$('[data-cost-paidtot]'); if(pt)pt.innerHTML='£'+paid.toFixed(2)+' <small>of £'+g.toFixed(2)+'</small>';
+  var list=$('[data-costlist]'); if(!list)return;
+  if(!live.length){list.innerHTML='<div class="empty">No costs yet.<br>Add what you\'ve booked above.</div>';return;}
+  var h='';live.forEach(function(c){
+    h+='<div class="exp'+(c.paid?' paid':'')+'" data-id="'+c.id+'">'
+     +'<button class="cost-pay" data-cost-paid="'+c.id+'" aria-label="Mark paid">'+(c.paid?'✓':'○')+'</button>'
+     +'<div class="meta"><div class="m1">'+esc(c.label||'Cost')+'</div>'
+     +'<div class="m2">'+(c.paid?'paid':'to pay')+(c.payer?' · '+esc(c.payer):'')+'</div></div>'
+     +'<div class="amt">'+(c.cur==='EUR'?'€':'£')+c.amount.toFixed(2)+'<small>£'+toGBP(c).toFixed(2)+'</small></div>'
+     +'<button class="del" data-cost-del="'+c.id+'" aria-label="Delete">✕</button></div>';
+  });
+  list.innerHTML=h;
+}
+function addCost(){
+  var amt=num($('[data-cost-amt]').value);
+  if(!amt){$('[data-cost-amt]').focus();return;}
+  var label=($('[data-cost-label]').value||'').trim();
+  var c={id:uid(),t:Date.now(),label:label||'Cost',amount:amt,cur:$('[data-cost-cur]').value,
+    payer:($('[data-cost-payer]').value||'').trim(),paid:false,deleted:false};
+  if(!state.costs)state.costs=[];
+  state.costs.push(c);
+  lsSet('italy2026:lastPayer',c.payer);
+  save();renderCosts();
+  $('[data-cost-amt]').value='';$('[data-cost-label]').value='';
+  if(navigator.vibrate)navigator.vibrate(8);
+  $('[data-cost-label]').focus();
+  schedulePush();
+}
+function delCost(id){
+  var c=(state.costs||[]).filter(function(x){return x.id===id;})[0];
+  if(!c)return; if(!confirm('Delete this cost?'))return;
+  c.deleted=true;c.t=Date.now();save();renderCosts();schedulePush();
+}
+function toggleCostPaid(id){
+  var c=(state.costs||[]).filter(function(x){return x.id===id;})[0];
+  if(!c)return; c.paid=!c.paid;c.t=Date.now();save();renderCosts();
+  if(navigator.vibrate)navigator.vibrate(5);schedulePush();
+}
+
 /* ---------- merge (last-write-wins per id) ---------- */
 function merge(a,b){
   var byId={},out=[];
@@ -359,8 +427,11 @@ function merge(a,b){
   var ci={};
   (a.customItems||[]).concat(b.customItems||[]).forEach(function(e){var p=ci[e.id];if(!p||(e.t||0)>=(p.t||0))ci[e.id]=e;});
   var clist=Object.keys(ci).map(function(k){return ci[k];});
+  var cs={};
+  (a.costs||[]).concat(b.costs||[]).forEach(function(e){var p=cs[e.id];if(!p||(e.t||0)>=(p.t||0))cs[e.id]=e;});
+  var cslist=Object.keys(cs).map(function(k){return cs[k];});
   var newer=(b.meta&&b.meta.updatedAt||0)>(a.meta&&a.meta.updatedAt||0)?b:a;
-  return {expenses:out,checks:checks,customItems:clist,rate:newer.rate||a.rate||1.15,budget:(newer.budget!=null?newer.budget:a.budget),meta:{updatedAt:Math.max(a.meta&&a.meta.updatedAt||0,b.meta&&b.meta.updatedAt||0)}};
+  return {expenses:out,checks:checks,customItems:clist,costs:cslist,rate:newer.rate||a.rate||1.15,budget:(newer.budget!=null?newer.budget:a.budget),meta:{updatedAt:Math.max(a.meta&&a.meta.updatedAt||0,b.meta&&b.meta.updatedAt||0)}};
 }
 
 /* ---------- gist sync (reuses Hub Pocket pattern) ---------- */
@@ -386,7 +457,7 @@ function syncNow(){
   setSync('','syncing…');
   return gistRead().then(function(remote){
     var merged=merge(state,remote||{expenses:[],meta:{updatedAt:0}});
-    return gistWrite(merged).then(function(){state=merged;save();renderExp();reflectSettings();setSync('ok','synced');});
+    return gistWrite(merged).then(function(){state=merged;save();renderExp();renderCosts();reflectSettings();setSync('ok','synced');});
   }).catch(function(e){console.warn(e);setSync('err','sync error');});
 }
 
@@ -405,7 +476,7 @@ function saveSettings(){
   var id=$('[data-cfg-id]').value.trim().replace(/^.*\/(?=[0-9a-f]{6,})/i,'');
   var tk=$('[data-cfg-token]').value.trim();
   if(id&&tk){creds={id:id,token:tk};lsSet(IDK,id);lsSet(TOKK,tk);}
-  save();renderExp();
+  save();renderExp();renderCosts();
   $('[data-cfg-msg]').textContent='Saved.';
   if(creds)syncNow().then(function(){closeSettings();});else{setSync('','local');setTimeout(closeSettings,400);}
 }
@@ -416,7 +487,7 @@ function exportBackup(){
 function importBackup(){
   var inp=document.createElement('input');inp.type='file';inp.accept='application/json,.json';
   inp.onchange=function(){var f=inp.files[0];if(!f)return;var r=new FileReader();
-    r.onload=function(){try{var o=JSON.parse(r.result);state=merge(state,o);save();renderExp();reflectSettings();$('[data-cfg-msg]').textContent='Imported & merged.';}catch(e){$('[data-cfg-msg]').textContent='Could not read that file.';}};
+    r.onload=function(){try{var o=JSON.parse(r.result);state=merge(state,o);save();renderExp();renderCosts();reflectSettings();$('[data-cfg-msg]').textContent='Imported & merged.';}catch(e){$('[data-cfg-msg]').textContent='Could not read that file.';}};
     r.readAsText(f);};
   inp.click();
 }
@@ -437,6 +508,9 @@ document.addEventListener('click',function(ev){
   var ck=t.closest&&t.closest('[data-chk]'); if(ck){toggleCheck(ck.getAttribute('data-chk'));return;}
   if(t.closest&&t.closest('[data-add]')){addExpense();return;}
   var d=t.closest&&t.closest('[data-del]'); if(d){delExpense(d.getAttribute('data-del'));return;}
+  if(t.closest&&t.closest('[data-add-cost]')){addCost();return;}
+  var cdl=t.closest&&t.closest('[data-cost-del]'); if(cdl){delCost(cdl.getAttribute('data-cost-del'));return;}
+  var cpd=t.closest&&t.closest('[data-cost-paid]'); if(cpd){toggleCostPaid(cpd.getAttribute('data-cost-paid'));return;}
   if(t.closest&&t.closest('[data-open-settings]')){openSettings();return;}
   if(t.closest&&t.closest('[data-close-settings]')){closeSettings();return;}
   if(t.closest&&t.closest('[data-cfg-save]')){saveSettings();return;}
@@ -451,7 +525,7 @@ $('[data-amt]').addEventListener('keydown',function(e){if(e.key==='Enter')addExp
 $('[data-payer]').value=lsGet('italy2026:lastPayer')||'';
 $('[data-cat]').value=lsGet('italy2026:lastCat')||'';
 
-renderExp();renderChecks();
+renderExp();renderChecks();renderCosts();
 if(creds){setSync('','synced?');syncNow();}else setSync('','local');
 window.addEventListener('online',function(){if(creds)syncNow();});
 
